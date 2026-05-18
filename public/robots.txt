@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /cuenta/
+Disallow: /mascotas/
+Disallow: /onboarding/
+Disallow: /auth/
+
+Sitemap: https://kullin.app/sitemap.xml

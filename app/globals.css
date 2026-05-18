@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #f4ede0;
+    --bg-card: #fbf6ec;
+    --ink: #2a2418;
+    --ink-soft: #6b5e4a;
+    --moss: #4a6741;
+    --moss-deep: #2d4127;
+    --terracotta: #c4623a;
+    --gold: #d4a843;
+    --rose: #c97b6a;
+    --border: rgba(42, 36, 24, 0.12);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(circle at 20% 30%, rgba(196, 98, 58, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(74, 103, 65, 0.05) 0%, transparent 50%);
+  }
+
+  main, #root-content {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply max-w-[440px] mx-auto px-6 pb-32;
+  }
+
+  .input {
+    @apply w-full px-4 py-[14px] border bg-bg-card rounded-2xl text-base text-ink;
+    @apply focus:outline-none focus:border-moss focus:bg-white transition-colors;
+  }
+
+  .label {
+    @apply block text-[13px] font-medium text-ink-soft mb-2.5 uppercase tracking-[0.06em];
+  }
+
+  .btn-primary {
+    @apply w-full py-4 bg-ink text-bg rounded-2xl text-base font-semibold;
+    @apply active:scale-[0.98] transition-transform;
+  }
+
+  .btn-secondary {
+    @apply w-full py-[14px] bg-transparent text-ink-soft border rounded-2xl text-[15px];
+  }
+
+  .btn-moss {
+    @apply w-full py-[14px] bg-moss-deep text-bg rounded-xl text-[15px] font-semibold;
+    @apply active:scale-[0.98] transition-transform;
+  }
+
+  .pill {
+    @apply flex-1 py-3 px-4 border bg-bg-card rounded-xl text-sm font-medium text-ink;
+    @apply text-center cursor-pointer transition-all;
+  }
+  .pill-active {
+    @apply bg-moss-deep border-moss-deep text-bg;
+  }
+
+  .pill-big {
+    @apply flex-1 py-6 px-3 border bg-bg-card rounded-2xl text-center cursor-pointer transition-all;
+  }
+  .pill-big-active {
+    @apply bg-moss-deep border-moss-deep text-bg;
+  }
+
+  .card {
+    @apply bg-bg-card border rounded-3xl p-5 shadow-card mb-3.5;
+  }
+
+  .reason-tag {
+    @apply inline-block px-2.5 py-1 rounded-full text-[11px] font-medium;
+    @apply bg-moss/10 text-moss-deep;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(42,36,24,0.04), rgba(42,36,24,0.1), rgba(42,36,24,0.04));
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
