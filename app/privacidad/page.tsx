@@ -32,7 +32,7 @@ export default function PrivacidadPage() {
             <p className="text-[15px] leading-relaxed">
               <strong>Kulliñ</strong> es una plataforma web operada por
               <strong> [NOMBRE LEGAL O RUT DE LA PERSONA RESPONSABLE]</strong>,
-              con domicilio en <strong>[CIUDAD]</strong>, Chile. Para efectos de la
+              con domicilio en <strong>Santiago</strong>, Chile. Para efectos de la
               Ley 21.719 sobre protección de datos personales,
               actuamos como <em>Responsable del Tratamiento</em> de los datos personales
               que recolectamos a través del sitio kullin.app.

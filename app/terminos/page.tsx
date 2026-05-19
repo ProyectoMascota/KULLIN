@@ -34,8 +34,8 @@ export default function TerminosPage() {
               con su perfil y recibir recordatorios cuando se acerque el agotamiento del alimento.
             </p>
             <p className="text-[15px] leading-relaxed mt-3">
-              El Servicio es operado por <strong>[NOMBRE LEGAL O RUT]</strong>, con domicilio en
-              <strong> [CIUDAD]</strong>, Chile. Estos términos rigen tu uso del Servicio.
+              El Servicio es operado por <strong>Karen Kerlyn Salazar Henríquez, RUT 26.118.736-1</strong>, con domicilio en
+              <strong> Santiago</strong>, Chile. Estos términos rigen tu uso del Servicio.
               <strong> Al crear una cuenta, aceptas estos términos.</strong> Si no estás de acuerdo,
               no uses el Servicio.
             </p>
@@ -162,7 +162,7 @@ export default function TerminosPage() {
             <p className="text-[15px] leading-relaxed">
               Estos términos se rigen por la <strong>legislación chilena</strong>. Cualquier controversia
               se someterá a los tribunales ordinarios de justicia con jurisdicción en
-              <strong> [CIUDAD]</strong>, Chile, renunciando expresamente a cualquier otro fuero.
+              <strong> Santiago</strong>, Chile, renunciando expresamente a cualquier otro fuero.
             </p>
           </section>
 
