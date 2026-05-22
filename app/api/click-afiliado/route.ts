@@ -16,7 +16,7 @@ const ClickSchema = z.object({
   producto_id: z.string().uuid(),
   formato_kg: z.number().positive().optional(),
   mascota_id: z.string().uuid().optional(),
-  origen: z.enum(['recomendacion', 'recordatorio_email', 'busqueda_directa', 'home']).default('recomendacion'),
+  origen: z.enum(['recomendacion', 'recordatorio_email', 'busqueda_directa', 'home', 'tienda']).default('recomendacion'),
 });
 
 export async function POST(request: Request) {

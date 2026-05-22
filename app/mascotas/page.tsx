@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { requireUser } from '@/app/lib/supabase-server';
-import { AppHeader } from '@/components/AppHeader';
+import { AppShellHeader } from '@/components/AppShellHeader';
 import { emojiOf } from '@/app/lib/species-config';
+import { formatName } from '@/app/lib/format-text';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,9 +27,17 @@ export default async function MascotasPage() {
     redirect(`/mascotas/${mascotas[0].id}`);
   }
 
+  // Nombre del dueño para avatar header
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('nombre')
+    .eq('id', user.id)
+    .single();
+  const ownerName = profile?.nombre ?? user.email ?? null;
+
   return (
     <>
-      <AppHeader />
+      <AppShellHeader ownerName={ownerName} />
       <main className="container-app pt-4 animate-fade-up">
         <h1 className="font-display text-3xl text-ink leading-tight mb-2">
           Tus <em className="text-terracotta italic font-normal">compañeros</em>
@@ -46,7 +55,7 @@ export default async function MascotasPage() {
                 {emojiOf(m.especie)}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-display text-xl text-ink leading-tight">{m.nombre}</div>
+                <div className="font-display text-xl text-ink leading-tight">{formatName(m.nombre)}</div>
                 <div className="text-[13px] text-ink-soft truncate">
                   {m.raza} · {m.peso_kg} kg
                 </div>

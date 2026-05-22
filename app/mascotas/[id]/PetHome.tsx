@@ -1,9 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RegistrarCompraModal } from '@/components/RegistrarCompraModal';
+import { BottomNav } from '@/components/BottomNav';
 import { emojiOf } from '@/app/lib/species-config';
+import { formatName, dias } from '@/app/lib/format-text';
+import { setActivePetId } from '@/app/lib/active-pet';
+import { calcularEstadoEmocional } from '@/app/lib/emotional-state';
 
 interface PetHomeProps {
   mascota: any;
@@ -15,6 +19,11 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
   const router = useRouter();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState<any>(null);
+
+  // Registrar esta mascota como activa al cargar
+  useEffect(() => {
+    if (mascota?.id) setActivePetId(mascota.id);
+  }, [mascota?.id]);
 
   const top = recomendaciones[0];
 
@@ -28,12 +37,8 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
   const merKcal = Math.round(Number(mascota.mer_kcal));
   const factor = (Number(mascota.mer_kcal) / Number(mascota.rer_kcal)).toFixed(2);
 
-  // Barra de comida — colores según urgencia
-  let barraColor = 'from-moss to-[#6b8c5a]';
-  if (estado_comida) {
-    if (estado_comida.nivel_barra < 20) barraColor = 'from-terracotta to-rose';
-    else if (estado_comida.nivel_barra < 40) barraColor = 'from-gold to-[#e8c060]';
-  }
+  // Estado emocional según % comida restante (null si no hay compra registrada)
+  const emocional = calcularEstadoEmocional(estado_comida?.nivel_barra ?? null);
 
   async function recomendar(producto: any) {
     const formato = producto.formatos?.sort((a: any, b: any) => b.kg - a.kg)[
@@ -63,57 +68,65 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
 
   return (
     <main className="container-app pt-2 animate-fade-up">
-      {/* Hero */}
-      <div className="text-center mb-6">
+      {/* Hero — avatar + nombre */}
+      <div className="text-center mb-5">
         <div className="mx-auto w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#e8d4b0] to-gold grid place-items-center text-6xl shadow-card relative">
           {emojiOf(mascota.especie)}
           <div className="absolute -inset-1 rounded-full border-2 border-terracotta/30" />
         </div>
-        <h1 className="font-display text-[32px] text-ink tracking-tight mt-3.5">{mascota.nombre}</h1>
+        <h1 className="font-display text-[32px] text-ink tracking-tight mt-3.5">{formatName(mascota.nombre)}</h1>
         <p className="text-sm text-ink-soft mt-0.5">
           {mascota.raza} · {Math.floor(mascota.edad_meses / 12)} años · {mascota.peso_kg}kg
         </p>
       </div>
 
-      {/* Barra de comida */}
+      {/* Card emocional — estado + barra alimento + tiempo restante */}
       <div className="card">
-        <div className="flex justify-between items-baseline mb-3.5">
-          <span className="text-[12px] uppercase tracking-[0.08em] text-ink-soft font-semibold">
-            🍽️ Comida restante
-          </span>
-          {estado_comida ? (
-            <span className="font-display text-[28px] text-ink leading-none">
-              {estado_comida.dias_restantes}
-              <span className="ml-1 text-[15px] text-ink-soft font-sans">días</span>
-            </span>
-          ) : (
-            <span className="text-sm text-ink-soft">Sin registrar</span>
-          )}
+        {/* Estado emocional grande */}
+        <div className="text-center mb-4">
+          <div className="text-5xl leading-none mb-2" aria-hidden="true">
+            {emocional.emoji}
+          </div>
+          <div className="font-display text-xl text-ink leading-tight">
+            {emocional.texto}
+          </div>
         </div>
 
         {estado_comida ? (
           <>
-            <div className="h-3.5 bg-ink/10 rounded-full overflow-hidden">
+            {/* Barra de alimento */}
+            <div className="flex justify-between items-baseline mb-2">
+              <span className="text-[13px] text-ink-soft">Alimento</span>
+              <span className="text-[13px] text-ink-soft font-medium">{estado_comida.nivel_barra}%</span>
+            </div>
+            <div className="h-3 bg-ink/10 rounded-full overflow-hidden mb-3">
               <div
-                className={`h-full bg-gradient-to-r ${barraColor} rounded-full transition-[width] duration-700`}
+                className={`h-full bg-gradient-to-r ${emocional.barraColor} rounded-full transition-[width] duration-700`}
                 style={{ width: `${estado_comida.nivel_barra}%` }}
               />
             </div>
-            <div className="flex justify-between mt-2 text-[13px] text-ink-soft">
-              <span>Comprado: {fmtFecha(estado_comida.fecha_compra)}</span>
-              <span>Hasta: {fmtFecha(estado_comida.fecha_agotamiento)}</span>
+
+            {/* Tiempo restante */}
+            <div className="flex justify-between items-baseline">
+              <span className="text-[13px] text-ink-soft">Tiempo restante</span>
+              <span className="font-display text-[20px] text-ink leading-none">
+                {estado_comida.dias_restantes}
+                <span className="ml-1 text-[13px] text-ink-soft font-sans">
+                  {dias(estado_comida.dias_restantes)}
+                </span>
+              </span>
             </div>
           </>
         ) : (
-          <div className="py-1">
+          <div className="text-center">
             <p className="text-sm text-ink-soft mb-3">
-              Aún no has registrado ninguna compra. Cuando lo hagas, verás aquí cuánta comida le queda.
+              Cuando registres una compra, verás aquí su estado.
             </p>
             <button
               onClick={() => setModalAbierto(true)}
               className="btn-secondary"
             >
-              + Registrar primera compra
+              Registrar primera compra
             </button>
           </div>
         )}
@@ -122,8 +135,8 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
       {/* Ración diaria */}
       <div className="card">
         <div className="flex justify-between items-baseline mb-1">
-          <span className="text-[12px] uppercase tracking-[0.08em] text-ink-soft font-semibold">
-            📊 Hoy debe comer
+          <span className="section-eyebrow">
+            Hoy come
           </span>
         </div>
         <div className="font-display text-[56px] leading-none tracking-tight text-ink my-2">
@@ -141,15 +154,15 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
       {/* Producto recomendado (top) */}
       {top && (
         <div className="relative overflow-hidden rounded-3xl border border-gold bg-gradient-to-br from-bg-card to-[#f0e6d2] p-[18px] mb-3.5">
-          <span className="absolute top-3.5 -right-7 bg-moss-deep text-bg text-[10px] font-bold tracking-[0.1em] px-8 py-1 rotate-[35deg]">
-            TOP MATCH
+          <span className="absolute top-3.5 -right-7 bg-moss-deep text-bg text-[10px] font-semibold tracking-[0.05em] px-8 py-1 rotate-[35deg]">
+            Mejor opción
           </span>
           <div className="flex gap-3.5 items-start">
             <div className="w-[72px] h-[72px] bg-white rounded-xl border grid place-items-center text-4xl flex-shrink-0">
               🥣
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-terracotta">
+              <div className="text-[12px] font-semibold tracking-[0.02em] text-terracotta">
                 {top.producto.marca}
               </div>
               <div className="font-display text-lg text-ink leading-tight my-1">
@@ -171,7 +184,7 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
             onClick={() => recomendar(top.producto)}
             className="btn-moss mt-3.5"
           >
-            Recomendar a {mascota.nombre} →
+            Recomendar a {formatName(mascota.nombre)} →
           </button>
         </div>
       )}
@@ -182,13 +195,13 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
           onClick={() => setModalAbierto(true)}
           className="py-3.5 bg-bg-card border rounded-2xl text-sm font-medium text-ink text-center"
         >
-          + Marcar compra
+          Registrar compra
         </button>
         <Link
           href={`/mascotas/${mascota.id}/historial`}
           className="py-3.5 bg-bg-card border rounded-2xl text-sm font-medium text-ink text-center"
         >
-          📈 Historial
+          Historial
         </Link>
       </div>
 
@@ -203,7 +216,7 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
                   🥣
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-terracotta">
+                  <div className="text-[11px] font-semibold tracking-[0.02em] text-terracotta">
                     {r.producto.marca}
                   </div>
                   <div className="text-sm text-ink truncate">{r.producto.linea}</div>
@@ -224,8 +237,8 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
       )}
 
       <p className="text-[11px] text-ink-soft text-center mt-8 px-4 leading-relaxed">
-        Estimación basada en peso y actividad reportados. <br />
-        Pesa a tu mascota mensualmente para mantener la ración ajustada.
+        Estimación basada en sus datos actuales. <br />
+        Pesarla cada 1-2 meses ayuda a mantener la ración ajustada.
       </p>
 
       {modalAbierto && (
@@ -243,10 +256,8 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
           }}
         />
       )}
+
+      <BottomNav activePetId={mascota.id} />
     </main>
   );
-}
-
-function fmtFecha(iso: string) {
-  return new Date(iso).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
 }

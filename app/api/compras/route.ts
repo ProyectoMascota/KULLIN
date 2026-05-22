@@ -13,7 +13,7 @@ const CompraSchema = z.object({
   cantidad_kg: z.number().positive().max(50),
   precio_pagado_clp: z.number().int().positive().optional(),
   fecha_compra: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  origen: z.enum(['amazon', 'mercadolibre', 'manual', 'otro']).default('manual'),
+  origen: z.enum(['amazon', 'mercadolibre', 'veterinaria', 'manual', 'otro']).default('manual'),
   click_afiliado_id: z.string().uuid().optional(),
   notas: z.string().max(500).optional(),
 });

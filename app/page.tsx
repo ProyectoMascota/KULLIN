@@ -25,7 +25,7 @@ export default function LandingPage() {
             </div>
           </div>
           <h1 className="font-display text-4xl leading-[1.1] tracking-tight text-ink mb-3">
-            ¿Tu mascota está <em className="text-terracotta italic font-normal">bien alimentada</em>?
+            Que nunca le falte <em className="text-terracotta italic font-normal">comida</em> a tu compañero.
           </h1>
           <p className="text-ink-soft text-[15px] mb-8 px-4">
             Para perros y gatos. Calcula su ración ideal en 1 minuto y nunca te quedes sin comida.

@@ -22,7 +22,7 @@ export function RegistrarCompraModal({
   );
   const [fechaCompra, setFechaCompra] = useState(new Date().toISOString().split('T')[0]);
   const [precio, setPrecio] = useState<number | ''>('');
-  const [origen, setOrigen] = useState<'manual' | 'mercadolibre' | 'amazon' | 'otro'>('manual');
+  const [origen, setOrigen] = useState<'manual' | 'mercadolibre' | 'veterinaria' | 'otro'>('manual');
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState('');
 
@@ -66,17 +66,14 @@ export function RegistrarCompraModal({
         onClick={(e) => e.stopPropagation()}
         className="bg-bg w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto animate-fade-up"
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-2xl text-ink">Registrar compra</h2>
-          <button onClick={onClose} className="text-2xl text-ink-soft w-9 h-9 grid place-items-center">×</button>
+          <button onClick={onClose} className="text-2xl text-ink-soft w-9 h-9 grid place-items-center" aria-label="Cerrar">×</button>
         </div>
-        <p className="text-sm text-ink-soft mb-6">
-          Cuando registres la compra, recalculamos la barra de comida.
-        </p>
 
         <div className="space-y-4">
           <div>
-            <label className="label">Producto comprado</label>
+            <label className="label-cozy">Producto</label>
             <select
               value={productoId}
               onChange={(e) => {
@@ -100,7 +97,7 @@ export function RegistrarCompraModal({
 
           {formatos.length > 0 ? (
             <div>
-              <label className="label">Formato</label>
+              <label className="label-cozy">Formato</label>
               <div className="grid grid-cols-3 gap-2">
                 {formatos.map((f: any) => (
                   <button
@@ -117,7 +114,7 @@ export function RegistrarCompraModal({
             </div>
           ) : (
             <div>
-              <label className="label">Cantidad (kg)</label>
+              <label className="label-cozy">Cantidad (kg)</label>
               <input
                 type="number"
                 step="0.1"
@@ -130,7 +127,7 @@ export function RegistrarCompraModal({
           )}
 
           <div>
-            <label className="label">Fecha de compra</label>
+            <label className="label-cozy">¿Cuándo la compraste?</label>
             <input
               type="date"
               value={fechaCompra}
@@ -141,24 +138,26 @@ export function RegistrarCompraModal({
           </div>
 
           <div>
-            <label className="label">Precio pagado (CLP, opcional)</label>
+            <label className="label-cozy">
+              Precio <span className="text-ink-soft/60 font-normal">(opcional)</span>
+            </label>
             <input
               type="number"
               inputMode="numeric"
               value={precio}
               onChange={(e) => setPrecio(e.target.value === '' ? '' : parseInt(e.target.value))}
-              placeholder="Opcional"
+              placeholder="En pesos chilenos"
               className="input"
             />
           </div>
 
           <div>
-            <label className="label">Dónde lo compraste</label>
+            <label className="label-cozy">¿Dónde la compraste?</label>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { v: 'manual', l: 'Tienda física' },
                 { v: 'mercadolibre', l: 'MercadoLibre' },
-                { v: 'amazon', l: 'Amazon' },
+                { v: 'veterinaria', l: 'Veterinaria' },
                 { v: 'otro', l: 'Otro' },
               ].map((o: any) => (
                 <button
@@ -184,7 +183,9 @@ export function RegistrarCompraModal({
         >
           {enviando ? 'Guardando…' : 'Guardar compra'}
         </button>
-        <button onClick={onClose} className="btn-secondary mt-2">Cancelar</button>
+        <p className="text-[12px] text-ink-soft text-center mt-3">
+          Al guardar, recalculamos los días de comida restante.
+        </p>
       </div>
     </div>
   );

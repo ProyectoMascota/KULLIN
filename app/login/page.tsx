@@ -53,7 +53,7 @@ function LoginInner() {
           Hola de <em className="text-terracotta italic font-normal">vuelta</em>.
         </h1>
         <p className="text-ink-soft text-[15px] mb-8">
-          Te enviamos un link para entrar sin contraseña.
+          Te enviamos un enlace para entrar sin contraseña.
         </p>
 
         {status === 'sent' ? (
@@ -61,14 +61,14 @@ function LoginInner() {
             <div className="text-5xl mb-3">📩</div>
             <h2 className="font-display text-2xl text-ink mb-2">Revisa tu correo</h2>
             <p className="text-sm text-ink-soft">
-              Te enviamos un link a <strong>{email}</strong>. <br />
+              Te enviamos un enlace a <strong>{email}</strong>. <br />
               Tócalo desde el mismo dispositivo para entrar.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="mb-5">
-              <label className="label" htmlFor="email">Correo electrónico</label>
+              <label className="label-cozy" htmlFor="email">Tu correo</label>
               <input
                 id="email"
                 type="email"
@@ -86,7 +86,7 @@ function LoginInner() {
               <p className="text-sm text-terracotta mb-4">⚠ {errorMsg}</p>
             )}
             <button type="submit" className="btn-primary" disabled={status === 'sending'}>
-              {status === 'sending' ? 'Enviando…' : 'Enviarme el link →'}
+              {status === 'sending' ? 'Enviando…' : 'Enviarme el enlace →'}
             </button>
           </form>
         )}

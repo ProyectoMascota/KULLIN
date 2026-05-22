@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { requireUser } from '@/app/lib/supabase-server';
-import { AppHeader } from '@/components/AppHeader';
+import { AppShellHeader } from '@/components/AppShellHeader';
 import { CuentaCliente } from './CuentaCliente';
 
 export const dynamic = 'force-dynamic';
@@ -16,16 +16,15 @@ export default async function CuentaPage() {
     .eq('id', user.id)
     .single();
 
+  const ownerName = profile?.nombre ?? user.email ?? null;
+
   return (
     <>
-      <AppHeader
-        rightSlot={
-          <Link href="/mascotas" className="text-sm text-ink-soft underline">
-            ← Volver
-          </Link>
-        }
-      />
+      <AppShellHeader ownerName={ownerName} />
       <main className="container-app pt-2 animate-fade-up">
+        <Link href="/mascotas" className="inline-flex items-center text-sm text-ink-soft hover:text-ink mb-4">
+          ← Volver
+        </Link>
         <h1 className="font-display text-3xl text-ink leading-tight mb-2">
           Tu <em className="text-terracotta italic font-normal">cuenta</em>
         </h1>

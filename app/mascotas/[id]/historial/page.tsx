@@ -1,7 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { requireUser } from '@/app/lib/supabase-server';
-import { AppHeader } from '@/components/AppHeader';
+import { AppShellHeader } from '@/components/AppShellHeader';
+import { BottomNav } from '@/components/BottomNav';
+import { formatName, plural } from '@/app/lib/format-text';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +18,14 @@ export default async function HistorialPage({ params }: { params: { id: string }
     .eq('user_id', user.id)
     .single();
   if (!mascota) notFound();
+
+  // Nombre del dueño para avatar header
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('nombre')
+    .eq('id', user.id)
+    .single();
+  const ownerName = profile?.nombre ?? user.email ?? null;
 
   const [{ data: compras }, { data: pesos }] = await Promise.all([
     supabase
@@ -39,25 +49,19 @@ export default async function HistorialPage({ params }: { params: { id: string }
 
   return (
     <>
-      <AppHeader
-        rightSlot={
-          <Link href={`/mascotas/${mascota.id}`} className="text-sm text-ink-soft underline">
-            ← Volver
-          </Link>
-        }
-      />
+      <AppShellHeader ownerName={ownerName} />
       <main className="container-app pt-2 animate-fade-up">
         <h1 className="font-display text-3xl text-ink leading-tight mb-2">
-          Historial de <em className="text-terracotta italic font-normal">{mascota.nombre}</em>
+          Historial de <em className="text-terracotta italic font-normal">{formatName(mascota.nombre)}</em>
         </h1>
         <p className="text-ink-soft text-[15px] mb-6">
-          {compras?.length ?? 0} compras · {pesos?.length ?? 0} pesajes
+          {plural(compras?.length ?? 0, 'compra')} · {plural(pesos?.length ?? 0, 'pesaje')}
         </p>
 
         {/* Total gastado */}
         {totalGastado > 0 && (
           <div className="card text-center">
-            <span className="text-[12px] uppercase tracking-[0.08em] text-ink-soft font-semibold">
+            <span className="section-eyebrow">
               Total gastado en alimento
             </span>
             <div className="font-display text-[40px] text-ink leading-none mt-2">
@@ -74,7 +78,7 @@ export default async function HistorialPage({ params }: { params: { id: string }
               <div key={c.id} className="bg-bg-card border rounded-2xl p-4">
                 <div className="flex justify-between items-start gap-3">
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold uppercase tracking-wider text-terracotta">
+                    <div className="text-[12px] font-semibold tracking-[0.02em] text-terracotta">
                       {c.productos?.marca}
                     </div>
                     <div className="text-sm text-ink truncate">{c.productos?.linea}</div>
@@ -119,6 +123,7 @@ export default async function HistorialPage({ params }: { params: { id: string }
           <p className="text-sm text-ink-soft px-1">Sin pesajes registrados.</p>
         )}
       </main>
+      <BottomNav activePetId={mascota.id} />
     </>
   );
 }

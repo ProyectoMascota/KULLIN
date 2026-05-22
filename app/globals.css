@@ -59,6 +59,16 @@
     @apply block text-[13px] font-medium text-ink-soft mb-2.5 uppercase tracking-[0.06em];
   }
 
+  /* Etiqueta cozy: sentence case, sin tracking forzado. Usar en formularios del producto. */
+  .label-cozy {
+    @apply block text-[14px] font-medium text-ink-soft mb-2;
+  }
+
+  /* Section header cozy: pequeño + medium + sin uppercase, para encabezados de cards (HOME, historial). */
+  .section-eyebrow {
+    @apply text-[13px] font-medium text-ink-soft;
+  }
+
   .btn-primary {
     @apply w-full py-4 bg-ink text-bg rounded-2xl text-base font-semibold;
     @apply active:scale-[0.98] transition-transform;

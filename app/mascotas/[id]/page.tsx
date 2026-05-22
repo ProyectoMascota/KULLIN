@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { requireUser } from '@/app/lib/supabase-server';
 import { recomendarProductos, diasRestantes, nivelBarraComida, type Producto } from '@/app/lib/nutrition';
-import { AppHeader } from '@/components/AppHeader';
+import { AppShellHeader } from '@/components/AppShellHeader';
 import { PetHome } from './PetHome';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +19,14 @@ export default async function MascotaPage({ params }: { params: { id: string } }
     .single();
 
   if (!mascota) notFound();
+
+  // 1b. Cargar nombre del dueño para el avatar header
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('nombre')
+    .eq('id', user.id)
+    .single();
+  const ownerName = profile?.nombre ?? user.email ?? null;
 
   // 2. Última compra para barra de comida
   const { data: ultima } = await supabase
@@ -71,7 +79,7 @@ export default async function MascotaPage({ params }: { params: { id: string } }
 
   return (
     <>
-      <AppHeader />
+      <AppShellHeader ownerName={ownerName} />
       <PetHome
         mascota={mascota}
         estado_comida={estado_comida}
