@@ -4,6 +4,7 @@ import { requireUser } from '@/app/lib/supabase-server';
 import { AppShellHeader } from '@/components/AppShellHeader';
 import { BottomNav } from '@/components/BottomNav';
 import { formatName, plural } from '@/app/lib/format-text';
+import { calcularInsights } from '@/app/lib/insights';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,9 +43,14 @@ export default async function HistorialPage({ params }: { params: { id: string }
       .limit(20),
   ]);
 
-  const totalGastado = (compras ?? []).reduce(
-    (s, c: any) => s + (c.precio_pagado_clp ?? 0),
-    0
+  // Insights derivados (función pura)
+  const insights = calcularInsights(
+    (compras ?? []).map((c: any) => ({
+      id: c.id,
+      fecha_compra: c.fecha_compra,
+      cantidad_kg: c.cantidad_kg,
+      precio_pagado_clp: c.precio_pagado_clp,
+    }))
   );
 
   return (
@@ -58,20 +64,37 @@ export default async function HistorialPage({ params }: { params: { id: string }
           {plural(compras?.length ?? 0, 'compra')} · {plural(pesos?.length ?? 0, 'pesaje')}
         </p>
 
-        {/* Total gastado */}
-        {totalGastado > 0 && (
-          <div className="card text-center">
-            <span className="section-eyebrow">
-              Total gastado en alimento
-            </span>
-            <div className="font-display text-[40px] text-ink leading-none mt-2">
-              {fmtCLP(totalGastado)}
+        {/* Insights — 4 cards en grid 2x2 */}
+        {insights.totalCompras > 0 && (
+          <div className="bg-bg-card border rounded-3xl p-4 mb-6">
+            <span className="section-eyebrow block mb-3">Resumen</span>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <Insight
+                titulo="Última compra"
+                valor={insights.ultimaCompra ? fmtFechaCorta(insights.ultimaCompra) : '—'}
+              />
+              <Insight
+                titulo="Duración promedio"
+                valor={
+                  insights.duracionPromedioDias != null
+                    ? `${insights.duracionPromedioDias} ${insights.duracionPromedioDias === 1 ? 'día' : 'días'}`
+                    : '—'
+                }
+              />
+              <Insight
+                titulo="Total compras"
+                valor={String(insights.totalCompras)}
+              />
+              <Insight
+                titulo="Total gastado"
+                valor={insights.totalGastadoClp != null ? fmtCLP(insights.totalGastadoClp) : '—'}
+              />
             </div>
           </div>
         )}
 
         {/* Compras */}
-        <h2 className="font-display text-lg text-ink mt-8 mb-3 px-1">Compras</h2>
+        <h2 className="font-display text-lg text-ink mt-2 mb-3 px-1">Compras</h2>
         {compras && compras.length > 0 ? (
           <div className="space-y-2">
             {compras.map((c: any) => (
@@ -131,8 +154,20 @@ export default async function HistorialPage({ params }: { params: { id: string }
 function fmtFecha(iso: string) {
   return new Date(iso).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
 }
+function fmtFechaCorta(iso: string) {
+  return new Date(iso).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+}
 function fmtCLP(n: number) {
   return new Intl.NumberFormat('es-CL', {
     style: 'currency', currency: 'CLP', maximumFractionDigits: 0,
   }).format(n);
+}
+
+function Insight({ titulo, valor }: { titulo: string; valor: string }) {
+  return (
+    <div>
+      <div className="text-[12px] text-ink-soft mb-1">{titulo}</div>
+      <div className="font-display text-[20px] text-ink leading-tight">{valor}</div>
+    </div>
+  );
 }

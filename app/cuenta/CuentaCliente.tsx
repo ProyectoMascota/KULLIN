@@ -39,7 +39,7 @@ export function CuentaCliente({ initialProfile }: { initialProfile: any }) {
     <>
       <div className="card space-y-5">
         <div>
-          <label className="label">Tu nombre</label>
+          <label className="label-cozy">Tu nombre</label>
           <input
             type="text"
             value={nombre}
@@ -50,7 +50,7 @@ export function CuentaCliente({ initialProfile }: { initialProfile: any }) {
 
         <div className="border-t border-ink/10 pt-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="label mb-0">Recordatorios por email</span>
+            <span className="label-cozy mb-0">Recordatorios por email</span>
             <button
               onClick={() => setNotifEmail(!notifEmail)}
               className={`w-12 h-7 rounded-full transition-colors relative ${
@@ -72,7 +72,7 @@ export function CuentaCliente({ initialProfile }: { initialProfile: any }) {
 
         {notifEmail && (
           <div className="border-t border-ink/10 pt-5">
-            <label className="label">Avisar con N días de anticipación</label>
+            <label className="label-cozy">¿Con cuántos días de anticipación?</label>
             <input
               type="number"
               min="1"

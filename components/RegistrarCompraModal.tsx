@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { ProductoSelectorSheet } from './ProductoSelectorSheet';
 
 interface Props {
   mascota: any;
@@ -25,6 +26,7 @@ export function RegistrarCompraModal({
   const [origen, setOrigen] = useState<'manual' | 'mercadolibre' | 'veterinaria' | 'otro'>('manual');
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState('');
+  const [sheetAbierto, setSheetAbierto] = useState(false);
 
   const productoSel = recomendaciones.find((r) => r.producto.id === productoId)?.producto ?? productoPreseleccionado;
   const formatos = productoSel?.formatos ?? [];
@@ -74,25 +76,23 @@ export function RegistrarCompraModal({
         <div className="space-y-4">
           <div>
             <label className="label-cozy">Producto</label>
-            <select
-              value={productoId}
-              onChange={(e) => {
-                setProductoId(e.target.value);
-                const found = recomendaciones.find((r) => r.producto.id === e.target.value)?.producto;
-                if (found) {
-                  const f = found.formatos?.sort((a: any, b: any) => b.kg - a.kg)[Math.min(1, found.formatos.length - 1)];
-                  setCantidadKg(f?.kg ?? 0);
-                }
-              }}
-              className="input"
+            <button
+              type="button"
+              onClick={() => setSheetAbierto(true)}
+              className="w-full bg-bg-card border border-ink/15 rounded-2xl px-4 py-3.5 text-left flex items-center justify-between gap-3 hover:border-moss transition-colors"
             >
-              <option value="">Seleccionar…</option>
-              {recomendaciones.map((r) => (
-                <option key={r.producto.id} value={r.producto.id}>
-                  {r.producto.marca} — {r.producto.linea}
-                </option>
-              ))}
-            </select>
+              {productoSel ? (
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12px] font-semibold tracking-[0.02em] text-terracotta">
+                    {productoSel.marca}
+                  </div>
+                  <div className="text-sm text-ink truncate">{productoSel.linea}</div>
+                </div>
+              ) : (
+                <span className="text-sm text-ink-soft">Tocá para elegir un producto</span>
+              )}
+              <span className="text-ink-soft text-lg flex-shrink-0">▾</span>
+            </button>
           </div>
 
           {formatos.length > 0 ? (
@@ -187,6 +187,22 @@ export function RegistrarCompraModal({
           Al guardar, recalculamos los días de comida restante.
         </p>
       </div>
+
+      <ProductoSelectorSheet
+        abierto={sheetAbierto}
+        opciones={recomendaciones}
+        productoIdActual={productoId}
+        onElegir={(p) => {
+          setProductoId(p.id);
+          // Resetear cantidad al formato mediano del nuevo producto
+          const found = recomendaciones.find((r) => r.producto.id === p.id)?.producto;
+          if (found) {
+            const f = found.formatos?.sort((a: any, b: any) => b.kg - a.kg)[Math.min(1, found.formatos.length - 1)];
+            setCantidadKg(f?.kg ?? 0);
+          }
+        }}
+        onCerrar={() => setSheetAbierto(false)}
+      />
     </div>
   );
 }
