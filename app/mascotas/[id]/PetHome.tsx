@@ -205,35 +205,20 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
         </Link>
       </div>
 
-      {/* Otras recomendaciones */}
+      {/* Link a Tienda: solo aparece si hay más opciones disponibles */}
       {recomendaciones.length > 1 && (
-        <div className="mt-6">
-          <h2 className="font-display text-lg text-ink mb-3 px-1">Otras opciones</h2>
-          <div className="space-y-2">
-            {recomendaciones.slice(1).map((r) => (
-              <div key={r.producto.id} className="bg-bg-card border rounded-2xl p-3 flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-lg border grid place-items-center text-xl flex-shrink-0">
-                  🥣
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-semibold tracking-[0.02em] text-terracotta">
-                    {r.producto.marca}
-                  </div>
-                  <div className="text-sm text-ink truncate">{r.producto.linea}</div>
-                  <div className="text-[11px] text-ink-soft">
-                    {r.match_pct}% match · {Math.round(r.gramos_diarios)}g/día
-                  </div>
-                </div>
-                <button
-                  onClick={() => recomendar(r.producto)}
-                  className="text-[12px] text-moss-deep font-semibold underline px-2"
-                >
-                  Ver
-                </button>
-              </div>
-            ))}
+        <Link
+          href="/tienda"
+          className="mt-5 flex items-center justify-between px-4 py-3 rounded-2xl bg-bg-card border border-ink/10 hover:border-moss transition-colors"
+        >
+          <div>
+            <div className="text-sm text-ink">Ver más opciones</div>
+            <div className="text-[12px] text-ink-soft mt-0.5">
+              {recomendaciones.length - 1} alternativa{recomendaciones.length - 1 === 1 ? '' : 's'} para {formatName(mascota.nombre)}
+            </div>
           </div>
-        </div>
+          <span className="text-ink-soft text-xl">→</span>
+        </Link>
       )}
 
       <p className="text-[11px] text-ink-soft text-center mt-8 px-4 leading-relaxed">

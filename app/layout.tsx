@@ -63,7 +63,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#f4ede0',
+  themeColor: '#FBF3E7',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -73,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&family=DM+Sans:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>

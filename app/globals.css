@@ -4,16 +4,45 @@
 
 @layer base {
   :root {
-    --bg: #f4ede0;
-    --bg-card: #fbf6ec;
-    --ink: #2a2418;
-    --ink-soft: #6b5e4a;
-    --moss: #4a6741;
-    --moss-deep: #2d4127;
-    --terracotta: #c4623a;
-    --gold: #d4a843;
-    --rose: #c97b6a;
-    --border: rgba(42, 36, 24, 0.12);
+    /* === FONDOS === */
+    --bg: #FBF3E7;
+    --bg-soft: #F7EDDD;
+    --bg-card: #FFF8EC;
+    --bg-card-warm: #FAEDDB;
+
+    /* === TINTA === */
+    --ink: #3B2A1E;
+    --ink-soft: #7A6552;
+    --ink-faded: #A99581;
+
+    /* === MARRONES === */
+    --coffee: #5C3A1F;
+    --coffee-soft: #7A4E2D;
+    --cocoa: #8A5A36;
+    --cocoa-soft: #A36B3F;
+
+    /* === NARANJAS / DURAZNO === */
+    --peach: #E8A669;
+    --peach-deep: #D98C4B;
+    --apricot: #F0C189;
+
+    /* === VERDES === */
+    --sage: #A8BD96;
+    --sage-deep: #7F9A6B;
+    --sage-soft: #C8D6B8;
+
+    /* === ALERTAS === */
+    --coral: #D17656;
+    --coral-deep: #B85838;
+
+    /* === LEGACY === */
+    --moss: #7F9A6B;
+    --moss-deep: #5C7548;
+    --terracotta: #A36B3F;
+    --gold: #E8A669;
+    --rose: #D17656;
+
+    --border: rgba(59, 42, 30, 0.10);
   }
 
   html {
@@ -23,25 +52,36 @@
   body {
     background-color: var(--bg);
     color: var(--ink);
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.5;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+    line-height: 1.55;
     min-height: 100vh;
     position: relative;
+    /* Anti-aliasing fino para tipografía rounded */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Glow suave de fondo: ya no son terracota+verde, ahora son durazno+apricot cálido */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    background-image: radial-gradient(circle at 20% 30%, rgba(196, 98, 58, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(74, 103, 65, 0.05) 0%, transparent 50%);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(232, 166, 105, 0.06) 0%, transparent 55%),
+      radial-gradient(circle at 90% 85%, rgba(168, 189, 150, 0.05) 0%, transparent 55%);
   }
 
   main, #root-content {
     position: relative;
     z-index: 1;
+  }
+
+  /* Headings con peso ligeramente más pesado por defecto */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.01em;
   }
 }
 
@@ -52,63 +92,78 @@
 
   .input {
     @apply w-full px-4 py-[14px] border bg-bg-card rounded-2xl text-base text-ink;
-    @apply focus:outline-none focus:border-moss focus:bg-white transition-colors;
+    @apply focus:outline-none focus:border-cocoa focus:bg-white transition-colors;
+    font-family: 'Nunito', sans-serif;
   }
 
+  /* Label legacy - solo para blog. NO usar en producto. */
   .label {
     @apply block text-[13px] font-medium text-ink-soft mb-2.5 uppercase tracking-[0.06em];
   }
 
-  /* Etiqueta cozy: sentence case, sin tracking forzado. Usar en formularios del producto. */
+  /* Label cozy: sentence case suave */
   .label-cozy {
-    @apply block text-[14px] font-medium text-ink-soft mb-2;
+    @apply block text-[14px] font-semibold text-ink-soft mb-2;
   }
 
-  /* Section header cozy: pequeño + medium + sin uppercase, para encabezados de cards (HOME, historial). */
+  /* Section header cozy */
   .section-eyebrow {
-    @apply text-[13px] font-medium text-ink-soft;
+    @apply text-[13px] font-semibold text-ink-soft;
   }
 
+  /* Botón principal: marrón café profundo (era ink negro) */
   .btn-primary {
-    @apply w-full py-4 bg-ink text-bg rounded-2xl text-base font-semibold;
-    @apply active:scale-[0.98] transition-transform;
+    @apply w-full py-4 bg-coffee text-bg rounded-2xl text-base font-bold;
+    @apply active:scale-[0.98] transition-all hover:bg-coffee-soft;
+    letter-spacing: 0.01em;
   }
 
+  /* Botón secundario: outline suave */
   .btn-secondary {
-    @apply w-full py-[14px] bg-transparent text-ink-soft border rounded-2xl text-[15px];
+    @apply w-full py-[14px] bg-transparent text-ink-soft border rounded-2xl text-[15px] font-semibold;
+    @apply hover:border-cocoa hover:text-ink transition-colors;
   }
 
+  /* Botón verde sage: para CTAs positivos (Recomendar a Merida →) */
   .btn-moss {
-    @apply w-full py-[14px] bg-moss-deep text-bg rounded-xl text-[15px] font-semibold;
-    @apply active:scale-[0.98] transition-transform;
+    @apply w-full py-[14px] bg-sage-deep text-bg rounded-2xl text-[15px] font-bold;
+    @apply active:scale-[0.98] transition-all hover:bg-[#6B8459];
+    letter-spacing: 0.01em;
   }
 
   .pill {
-    @apply flex-1 py-3 px-4 border bg-bg-card rounded-xl text-sm font-medium text-ink;
+    @apply flex-1 py-3 px-4 border bg-bg-card rounded-xl text-sm font-semibold text-ink;
     @apply text-center cursor-pointer transition-all;
   }
   .pill-active {
-    @apply bg-moss-deep border-moss-deep text-bg;
+    @apply bg-coffee border-coffee text-bg;
   }
 
   .pill-big {
     @apply flex-1 py-6 px-3 border bg-bg-card rounded-2xl text-center cursor-pointer transition-all;
   }
   .pill-big-active {
-    @apply bg-moss-deep border-moss-deep text-bg;
+    @apply bg-coffee border-coffee text-bg;
   }
 
+  /* Card cozy: más radio, sombra muy sutil, fondo más cálido */
   .card {
     @apply bg-bg-card border rounded-3xl p-5 shadow-card mb-3.5;
   }
 
+  /* Card cálida: variante con fondo más durazno */
+  .card-warm {
+    @apply bg-bg-card-warm border rounded-3xl p-5 shadow-card mb-3.5;
+  }
+
+  /* Tags de razones de match */
   .reason-tag {
-    @apply inline-block px-2.5 py-1 rounded-full text-[11px] font-medium;
-    @apply bg-moss/10 text-moss-deep;
+    @apply inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold;
+    @apply bg-sage/20 text-sage-deep;
   }
 }
 
-/* Animaciones */
+/* === ANIMACIONES === */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -138,7 +193,16 @@
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, rgba(42,36,24,0.04), rgba(42,36,24,0.1), rgba(42,36,24,0.04));
+  background: linear-gradient(90deg, rgba(59, 42, 30, 0.04), rgba(59, 42, 30, 0.10), rgba(59, 42, 30, 0.04));
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+}
+
+/* Respiración sutil para el avatar de la mascota (sensación viva) */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+}
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
 }

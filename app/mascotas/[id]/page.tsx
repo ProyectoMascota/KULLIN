@@ -70,7 +70,7 @@ export default async function MascotaPage({ params }: { params: { id: string } }
           condicion: mascota.condicion,
         },
         productos as unknown as Producto[],
-        3
+        productos.length // todas las recomendaciones compatibles, no solo 3
       ).map((r) => ({
         ...r,
         match_pct: Math.min(100, Math.round((r.score / 10) * 100)),
