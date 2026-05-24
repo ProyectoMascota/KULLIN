@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ProductoOpcion {
   producto: {
@@ -53,6 +53,20 @@ export function ProductoSelectorSheet({
     return () => window.removeEventListener('keydown', onKey);
   }, [abierto, onCerrar]);
 
+  // Estado: mostrar todos o solo top 3
+  const [verTodos, setVerTodos] = useState(false);
+
+  // Cuando se cierra el sheet, resetear a top 3 para la próxima apertura
+  useEffect(() => {
+    if (!abierto) setVerTodos(false);
+  }, [abierto]);
+
+  const TOP_N = 3;
+  const totalOpciones = opciones.length;
+  const opcionesVisibles =
+    verTodos || totalOpciones <= TOP_N ? opciones : opciones.slice(0, TOP_N);
+  const ocultos = totalOpciones - TOP_N;
+
   if (!abierto) return null;
 
   return (
@@ -87,47 +101,60 @@ export function ProductoSelectorSheet({
               No hay productos compatibles todavía.
             </p>
           ) : (
-            opciones.map((o) => {
-              const isActive = o.producto.id === productoIdActual;
-              return (
+            <>
+              {opcionesVisibles.map((o) => {
+                const isActive = o.producto.id === productoIdActual;
+                return (
+                  <button
+                    key={o.producto.id}
+                    onClick={() => {
+                      onElegir(o.producto);
+                      onCerrar();
+                    }}
+                    className={`w-full text-left p-3 rounded-2xl border transition-colors flex items-center gap-3 ${
+                      isActive
+                        ? 'border-moss-deep bg-moss-deep/10'
+                        : 'border-ink/10 bg-bg-card hover:border-moss'
+                    }`}
+                  >
+                    <div className="w-11 h-11 bg-white rounded-xl border grid place-items-center text-2xl flex-shrink-0">
+                      🥣
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[12px] font-semibold tracking-[0.02em] text-terracotta">
+                        {o.producto.marca}
+                      </div>
+                      <div className="text-sm text-ink truncate">{o.producto.linea}</div>
+                      <div className="text-[11px] text-ink-soft mt-0.5">
+                        {o.match_pct != null && (
+                          <>
+                            <span className="text-moss-deep font-semibold">{o.match_pct}% match</span>
+                            {' · '}
+                          </>
+                        )}
+                        {o.producto.kcal_por_100g} kcal/100g
+                      </div>
+                    </div>
+                    {isActive && (
+                      <span className="text-moss-deep text-xl" aria-hidden="true">
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+
+              {/* Botón Ver más productos: solo aparece si hay más de TOP_N y aún no se expandió */}
+              {!verTodos && ocultos > 0 && (
                 <button
-                  key={o.producto.id}
-                  onClick={() => {
-                    onElegir(o.producto);
-                    onCerrar();
-                  }}
-                  className={`w-full text-left p-3 rounded-2xl border transition-colors flex items-center gap-3 ${
-                    isActive
-                      ? 'border-moss-deep bg-moss-deep/10'
-                      : 'border-ink/10 bg-bg-card hover:border-moss'
-                  }`}
+                  onClick={() => setVerTodos(true)}
+                  className="w-full text-center py-3 mt-1 rounded-2xl bg-bg-card border border-ink/10 hover:border-moss transition-colors text-sm text-ink-soft"
                 >
-                  <div className="w-11 h-11 bg-white rounded-xl border grid place-items-center text-2xl flex-shrink-0">
-                    🥣
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[12px] font-semibold tracking-[0.02em] text-terracotta">
-                      {o.producto.marca}
-                    </div>
-                    <div className="text-sm text-ink truncate">{o.producto.linea}</div>
-                    <div className="text-[11px] text-ink-soft mt-0.5">
-                      {o.match_pct != null && (
-                        <>
-                          <span className="text-moss-deep font-semibold">{o.match_pct}% match</span>
-                          {' · '}
-                        </>
-                      )}
-                      {o.producto.kcal_por_100g} kcal/100g
-                    </div>
-                  </div>
-                  {isActive && (
-                    <span className="text-moss-deep text-xl" aria-hidden="true">
-                      ✓
-                    </span>
-                  )}
+                  Ver más productos{' '}
+                  <span className="text-ink">· {ocultos} más</span>
                 </button>
-              );
-            })
+              )}
+            </>
           )}
         </div>
       </div>
