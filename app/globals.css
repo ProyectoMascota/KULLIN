@@ -198,11 +198,52 @@
   animation: shimmer 1.5s infinite;
 }
 
-/* Respiración sutil para el avatar de la mascota (sensación viva) */
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.015); }
+/* ===========================
+   ANIMACIONES DE LA MASCOTA
+   ===========================
+   - kullin-pet-breathe: respiración sutil del avatar (escala)
+   - kullin-pet-halo: pulso del aro/borde detrás de la mascota
+   - kullin-pet-{estado}: ajusta velocidad y profundidad según ánimo
+   Respeta prefers-reduced-motion. */
+
+@keyframes kullinBreathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%      { transform: scale(1.04) translateY(-2px); }
 }
+
+.kullin-pet-breathe {
+  display: inline-block;
+  transform-origin: center bottom;
+  animation: kullinBreathe 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Variantes por estado emocional */
+.kullin-pet-feliz       { animation-duration: 2.6s; }
+.kullin-pet-bien        { animation-duration: 3s; }
+.kullin-pet-pronto      { animation-duration: 3.4s; }
+.kullin-pet-poco        { animation-duration: 4s; }
+.kullin-pet-sin_comida  { animation-duration: 5s; opacity: 0.85; }
+
+/* Halo: pulso muy sutil del círculo dorado de fondo */
+@keyframes kullinHalo {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 165, 116, 0.35); }
+  50%      { box-shadow: 0 0 0 12px rgba(212, 165, 116, 0); }
+}
+
+.kullin-pet-halo {
+  animation: kullinHalo 3.6s ease-in-out infinite;
+}
+
+/* Accesibilidad: respetar usuarios con preferencia reducida */
+@media (prefers-reduced-motion: reduce) {
+  .kullin-pet-breathe,
+  .kullin-pet-halo {
+    animation: none;
+  }
+}
+
+/* Compatibilidad con la clase vieja (por si quedó usada en otro lado) */
 .animate-breathe {
-  animation: breathe 4s ease-in-out infinite;
+  animation: kullinBreathe 3s ease-in-out infinite;
 }

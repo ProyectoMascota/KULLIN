@@ -70,8 +70,10 @@ export function PetHome({ mascota, estado_comida, recomendaciones }: PetHomeProp
     <main className="container-app pt-2 animate-fade-up">
       {/* Hero — avatar + nombre */}
       <div className="text-center mb-5">
-        <div className="mx-auto w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#e8d4b0] to-gold grid place-items-center text-6xl shadow-card relative">
-          {emojiOf(mascota.especie)}
+        <div className="mx-auto w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#e8d4b0] to-gold grid place-items-center text-6xl shadow-card relative kullin-pet-halo">
+          <span className={`kullin-pet-breathe kullin-pet-${emocional.estado}`} aria-hidden="true">
+            {emojiOf(mascota.especie)}
+          </span>
           <div className="absolute -inset-1 rounded-full border-2 border-terracotta/30" />
         </div>
         <h1 className="font-display text-[32px] text-ink tracking-tight mt-3.5">{formatName(mascota.nombre)}</h1>
