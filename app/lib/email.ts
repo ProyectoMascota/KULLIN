@@ -14,8 +14,15 @@ function getResend(): Resend {
   return new Resend(key);
 }
 
-const FROM = 'Kulliñ <hola@kullin.app>'; // verificar dominio en Resend
-const REPLY_TO = 'soporte@kullin.app';
+// Remitente y reply-to configurables vía env vars.
+// Si EMAIL_FROM no está seteada, usamos el dominio de prueba de Resend
+// (onboarding@resend.dev) — funciona sin verificación de dominio pero
+// SOLO permite enviar al email dueño de la cuenta Resend.
+// Cuando tengas dominio propio verificado, setear en Vercel:
+//   EMAIL_FROM=Kulliñ <hola@mikullin.cl>
+//   EMAIL_REPLY_TO=soporte@mikullin.cl
+const FROM = process.env.EMAIL_FROM ?? 'Kulliñ <onboarding@resend.dev>';
+const REPLY_TO = process.env.EMAIL_REPLY_TO ?? 'onboarding@resend.dev';
 
 interface RecordatorioParams {
   to: string;
@@ -65,6 +72,7 @@ export async function enviarEmailRecordatorio(p: RecordatorioParams) {
 }
 
 function textPlano(p: RecordatorioParams): string {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kullin-six.vercel.app';
   return `Hola ${p.nombre_dueno},
 
 A ${p.nombre_mascota} le quedan ${p.dias_restantes} días de comida.
@@ -75,5 +83,5 @@ Pídelo ahora para que no se quede sin comer:
 ${p.click_url}
 
 — Kulliñ
-Si no quieres recibir estos avisos: https://kullin.app/cuenta/notificaciones`;
+Si no quieres recibir estos avisos: ${appUrl}/cuenta`;
 }

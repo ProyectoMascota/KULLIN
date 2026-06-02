@@ -25,6 +25,7 @@ export function templateRecordatorio(p: RecordatorioParams): string {
   const config = getSpecies(p.especie);
   const urgente = p.dias_restantes <= 2;
   const acabado = p.dias_restantes <= 0;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kullin-six.vercel.app';
 
   const colorAcento = acabado ? '#c4623a' : urgente ? '#d4a843' : '#4a6741';
   const tituloPrincipal = acabado
@@ -227,7 +228,7 @@ export function templateRecordatorio(p: RecordatorioParams): string {
         <!-- Acción secundaria -->
         <tr>
           <td class="pad-mobile" align="center" style="padding: 0 32px 24px;">
-            <a href="https://kullin.app/mascotas" style="font-size:13px; color:#6b5e4a; text-decoration:underline;">
+            <a href="${appUrl}/mascotas" style="font-size:13px; color:#6b5e4a; text-decoration:underline;">
               Cambiar de alimento o ajustar perfil
             </a>
           </td>
@@ -240,9 +241,9 @@ export function templateRecordatorio(p: RecordatorioParams): string {
               Kulliñ · Cuidamos a tu compañero, no vendemos cosas.
             </p>
             <p style="margin:0; font-size:11px; color:#6b5e4a; text-align:center; line-height:1.5;">
-              <a href="https://kullin.app/cuenta/notificaciones" style="color:#6b5e4a; text-decoration:underline;">Cambiar frecuencia</a>
+              <a href="${appUrl}/cuenta" style="color:#6b5e4a; text-decoration:underline;">Cambiar frecuencia</a>
               &nbsp;·&nbsp;
-              <a href="https://kullin.app/cuenta/notificaciones?off=1" style="color:#6b5e4a; text-decoration:underline;">Desactivar recordatorios</a>
+              <a href="${appUrl}/cuenta" style="color:#6b5e4a; text-decoration:underline;">Desactivar recordatorios</a>
             </p>
             <p style="margin:14px 0 0; font-size:10px; color:#9b8e7a; text-align:center; line-height:1.4;">
               Las estimaciones se basan en NRC 2006 y WSAVA 2011. No reemplazan consulta veterinaria.
